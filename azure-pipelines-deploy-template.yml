@@ -1,0 +1,21 @@
+parameters: # defaults for any parameters that aren't specified
+  azureResourceManagerConnection: 'Microsoft Azure Sponsorship'
+  environmentName: 'DEV'
+  webSiteName: 'wa-partsunlimited-dev'
+
+jobs:
+  -  deployment: Deploy_my_code
+     environment: '${{parameters.environmentName}}'
+     pool:
+       vmImage: 'windows-latest'
+     strategy:
+      runOnce:                
+         deploy:
+          steps:     
+            - task: AzureRmWebAppDeployment@4
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: '${{parameters.azureResourceManagerConnection}}'
+                appType: 'webApp'
+                WebAppName: '${{parameters.webSiteName}}'
+                packageForLinux: '$(Agent.BuildDirectory)/**/*.zip'
